@@ -16,7 +16,7 @@ namespace SearchArray
 
         static void Main(string[] args)
         {
-            size = ConsoleEx.InputInt("Enter array size (1-1000):", 1, 1000);
+            size = ConsoleEx.InputInt("Enter array size (1-1000):", 1, 1000,ConsoleColor.Cyan);
             array = new int[size];
             // fill the array with values between rangeMin and rangeMax
             FillArray(array, rangeMin, rangeMax);
@@ -25,7 +25,7 @@ namespace SearchArray
             DisplayArray(array);
 
             // Only use Binary Search when ready
-            bool tryBinary = (ConsoleEx.InputLine("Ready to try Binary search? ").ToUpper()[0] == 'Y');
+            bool tryBinary = (ConsoleEx.InputLine("Ready to try Binary search? ", ConsoleColor.Cyan).ToUpper()[0] == 'Y');
 
             // Array must be sorted for Binary Search to work
             if (tryBinary)
@@ -105,7 +105,7 @@ namespace SearchArray
             // Use rangeMin - 1 to indicate  no more inputs.
             int stopVal = rangeMin - 1;
             ConsoleEx.WriteLine($"Enter values ({rangeMin} to {rangeMax}) to find, using {stopVal} to quit.");
-            int target = ConsoleEx.InputInt("Find value: ", rangeMin-1, rangeMax);
+            int target = ConsoleEx.InputInt("Find value: ", rangeMin-1, rangeMax, ConsoleColor.Cyan);
 
             while (target != stopVal)
             {
