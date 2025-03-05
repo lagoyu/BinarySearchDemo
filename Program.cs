@@ -83,7 +83,6 @@ namespace SearchArray
         /// 
         private static int LinearSearch(int[] array, int target)
         {
-            int i = "fred".IndexOf("red");
             int comparisons = 0; 
             int foundAt = -1; // target not yet found
             ConsoleEx.WriteLine("\nLinear Search for " + target);
