@@ -33,6 +33,15 @@ namespace ConsoleExtensions
             Console.ReadLine();
         }
 
+        public static bool ChoiceYN(String prompt = "\nType Y to Continue, N to Quit")
+        {
+            Write(prompt, ConsoleColor.Yellow);
+            bool result = Console.ReadKey().Key == ConsoleKey.Y;
+            Console.WriteLine();
+            return result;
+        }
+
+
         public static string InputLine(string prompt = "Enter text: ", ConsoleColor color = ConsoleColor.White)
         {
             string name;

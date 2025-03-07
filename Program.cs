@@ -7,59 +7,72 @@ namespace SearchArray
     {
         // Adjust these values as required
         static int size;
-        const int rangeMin = -999; // minimum value for random fill (> int.MinValue)
-        const int rangeMax = 999; // maximum value for random fill (<= int.MaxValue)
-        const int randomSeed = 1234; // this ensures all runs get the same 'random' sequence for comparison purposes
+        static int rangeMin = -999; // minimum value for random fill (> int.MinValue)
+        static int rangeMax = 999; // maximum value for random fill (<= int.MaxValue)
+        static int randomSeed = 1234; // this ensures all runs get the same 'random' sequence for comparison purposes
+        static bool showWorking = true; // set to trace execution of Binary Search
 
         // Declare an array to hold random inteher values between rangeMin and rangeMax (inclusive)
         static int[] array;
 
         static void Main(string[] args)
         {
-            size = ConsoleEx.InputInt("Enter array size (1-1000):", 1, 1000,ConsoleColor.Cyan);
-            array = new int[size];
-            // fill the array with values between rangeMin and rangeMax
-            FillArray(array, rangeMin, rangeMax);
 
-            ConsoleEx.WriteLine("Unsorted array:");
-            DisplayArray(array);
-
-            // Only use Binary Search when ready
-            bool tryBinary = (ConsoleEx.InputLine("Ready to try Binary search? ", ConsoleColor.Cyan).ToUpper()[0] == 'Y');
-
-            // Array must be sorted for Binary Search to work
-            if (tryBinary)
+            do
             {
-                SortArray(array);
-                ConsoleEx.WriteLine("Sorted Array:");
+                size = ConsoleEx.InputInt("Enter array size (1-1000):", 1, 1000, ConsoleColor.Cyan);
+                array = new int[size];
+                // fill the array with values between rangeMin and rangeMax
+                FillArray(array, rangeMin, rangeMax);
+
+                ConsoleEx.WriteLine("Unsorted array:");
                 DisplayArray(array);
-            }
 
-            //  Search the array to see if a value is present or not 
-            SearchForValues(tryBinary);
+                // Only use Binary Search when ready
+                bool tryBinary = ConsoleEx.ChoiceYN("Do Binary search (Y) or linear (N)?");
 
-            //  Wait before closing the window
-            ConsoleEx.Pause();
+                // Array must be sorted for Binary Search to work
+                if (tryBinary)
+                {
+                    SortArray(array);
+                    ConsoleEx.WriteLine("Sorted Array:");
+                    DisplayArray(array);
+                }
+
+                //  Search the array to see if a value is present or not 
+                SearchForValues(tryBinary);
+
+            } while (ConsoleEx.ChoiceYN());
+            
         }
 
 
         private static int BinarySearch(int[] array, int find)
         {
             int elementsCompared = 0;
-            ConsoleEx.WriteLine("\nBinary Search for " + find);
+            if (showWorking) 
+                ConsoleEx.WriteLine("\nBinary Search for " + find);
             //TODO Start
-            // remove the next line and code your solution between the commented algorithm lines
+            // remove this line and code your solution between the commented algorithm lines
 
             int low = 0;
             int high = array.Length - 1;
             int midpoint;
             int foundAt = -1; // -1 indicates value not yet found
-            ConsoleEx.WriteLine($" low   midpoint=value     high");
+
+            if (showWorking) 
+                ConsoleEx.WriteLine($" low   midpoint=value     high", ConsoleColor.Cyan);
+            
             while ((foundAt == -1) && (low <= high))
             {
-                midpoint = (low + high) / 2;
-                ConsoleEx.WriteLine($"[{low,3}] <-- [{midpoint,3}]={array[midpoint],-4} --> [{high,3}]");
-                elementsCompared++;
+                midpoint = (low + high) / 2; // assumed integer overflow will not occur even
+
+                if (showWorking)
+                {
+                    ConsoleEx.WriteLine($"[{low,3}] <-- [{midpoint,3}]={array[midpoint],-4} --> [{high,3}]", ConsoleColor.Cyan);
+                    elementsCompared++;
+                }
+
                 if (array[midpoint] == find)
                     foundAt = midpoint;
                 else if (array[midpoint] < find)
@@ -67,13 +80,15 @@ namespace SearchArray
                 else
                     high = midpoint - 1;
             }
+
             //TODO End
-            ConsoleEx.WriteLine(elementsCompared + " elements were compared");
+            if (showWorking) 
+                ConsoleEx.WriteLine(elementsCompared + " elements were compared", ConsoleColor.Cyan);
             return foundAt;
         }
 
 
-        // <summary>This method searches an array of integers
+        // <summary>This method searches an unsorted array of integers
         ///    for a given value</summary>
         /// <param name="array">the array to be searched</param>
         /// <param name="value">the value to be foundAt</param>
@@ -103,8 +118,9 @@ namespace SearchArray
         {
             // Use rangeMin - 1 to indicate  no more inputs.
             int stopVal = rangeMin - 1;
+            Console.WriteLine();
             ConsoleEx.WriteLine($"Enter values ({rangeMin} to {rangeMax}) to find, using {stopVal} to quit.");
-            int target = ConsoleEx.InputInt("Find value: ", rangeMin-1, rangeMax, ConsoleColor.Cyan);
+            int target = ConsoleEx.InputInt($"Find value ({stopVal} to quit): ", rangeMin-1, rangeMax, ConsoleColor.Cyan);
 
             while (target != stopVal)
             {
@@ -129,7 +145,8 @@ namespace SearchArray
                     ConsoleEx.WriteLine($"{target} was not found");
                 }
 
-                target = ConsoleEx.InputInt("Find value: ", rangeMin-1, rangeMax);
+                target = ConsoleEx.InputInt($"Find value ({stopVal} to quit): ", rangeMin - 1, rangeMax, ConsoleColor.Cyan);
+
             }
         }
 
@@ -147,11 +164,27 @@ namespace SearchArray
         }
         private static void DisplayArray(int[] array)
         {
+            int valuesPerLine = 10;
             ConsoleEx.WriteLine("The array elements are: ");
-            foreach (int value in array)
+
+            // Low digits of index header
+            ConsoleEx.Write("  +  ", ConsoleColor.DarkCyan);
+            for (int col = 0; col < valuesPerLine; col++)
             {
-                ConsoleEx.Write($"{value,5}");
+                ConsoleEx.Write($"{col,5}", ConsoleColor.DarkCyan);
             }
+            // 
+            for (int i = 0; i < array.Length; i++)
+            {
+                // New rows begin with first index displayed in DarkCyan
+                if (i % valuesPerLine == 0)
+                {
+                    ConsoleEx.WriteLine();
+                    ConsoleEx.Write($"{i,5}", ConsoleColor.DarkCyan);
+                }
+                ConsoleEx.Write($"{array[i],5}");
+            }
+
             ConsoleEx.WriteLine();
         }
 
